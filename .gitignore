@@ -1,0 +1,6 @@
+automation/ai-daily/node_modules/
+automation/ai-daily/output/
+.netlify/
+AGENTS.md
+automation/tmp/
+lark-apps-auth-qr.png
