@@ -268,7 +268,9 @@ const setTextFrom = (root, selector, value) => {
 
 const loadHomepageContent = async () => {
   try {
-    const response = await fetch(siteContentUrl, { cache: "no-cache" });
+    const requestUrl = new URL(siteContentUrl);
+    requestUrl.searchParams.set("_", Date.now().toString());
+    const response = await fetch(requestUrl, { cache: "no-store" });
 
     if (!response.ok) {
       return;
@@ -282,6 +284,12 @@ const loadHomepageContent = async () => {
 };
 
 loadHomepageContent();
+
+window.addEventListener("message", (event) => {
+  if (event.data?.type === "homepage-content-preview") {
+    renderHomepageContent(event.data.content);
+  }
+});
 
 const animateMetric = (element) => {
   const target = Number(element.dataset.count);

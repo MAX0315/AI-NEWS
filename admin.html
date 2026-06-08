@@ -9,10 +9,12 @@
         --ink: #161c1f;
         --muted: #647077;
         --paper: #f7f9f8;
-        --surface: rgba(255, 255, 255, 0.82);
+        --surface: rgba(255, 255, 255, 0.86);
         --line: rgba(22, 28, 31, 0.13);
         --accent: #183134;
+        --accent-2: #4b7470;
         --accent-soft: #d9e6e2;
+        --danger: #9b3d33;
         --shadow: 0 22px 58px rgba(25, 34, 38, 0.12);
       }
 
@@ -20,11 +22,15 @@
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
         color: var(--ink);
         background:
-          linear-gradient(rgba(247, 249, 248, 0.93), rgba(247, 249, 248, 0.96)),
+          linear-gradient(rgba(247, 249, 248, 0.93), rgba(247, 249, 248, 0.97)),
           url("assets/images/background-paper-texture.png"),
           var(--paper);
         font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -35,22 +41,27 @@
         color: inherit;
       }
 
+      code {
+        color: var(--accent);
+        font-family: "Cascadia Code", Consolas, monospace;
+      }
+
       .shell {
-        width: min(1180px, calc(100% - 36px));
+        width: min(1520px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 28px 0 48px;
+        padding: 22px 0 38px;
       }
 
       .topbar {
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: 20;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 18px;
-        padding: 18px 0;
-        background: rgba(247, 249, 248, 0.9);
+        padding: 14px 0;
+        background: rgba(247, 249, 248, 0.92);
         backdrop-filter: blur(18px);
       }
 
@@ -76,18 +87,20 @@
       button,
       .button-link {
         min-height: 42px;
-        padding: 0 18px;
+        padding: 0 16px;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: #fff;
         color: var(--ink);
         font: inherit;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 800;
         cursor: pointer;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 8px;
       }
 
       button.primary {
@@ -96,13 +109,21 @@
         color: #fff;
       }
 
+      button.ghost {
+        background: transparent;
+      }
+
       button:disabled {
         cursor: not-allowed;
         opacity: 0.62;
       }
 
       .notice {
-        margin: 18px 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: center;
+        margin: 14px 0 18px;
         padding: 14px 16px;
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -111,60 +132,77 @@
         font-size: 14px;
       }
 
-      .layout {
-        display: grid;
-        grid-template-columns: 240px minmax(0, 1fr);
-        gap: 20px;
-        align-items: start;
-      }
-
-      .sidebar {
-        position: sticky;
-        top: 96px;
-        display: grid;
-        gap: 8px;
-        padding: 12px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--surface);
-        box-shadow: var(--shadow);
-      }
-
-      .sidebar a {
-        padding: 9px 10px;
-        border-radius: 6px;
-        color: var(--muted);
-        font-weight: 700;
-        text-decoration: none;
-      }
-
-      .sidebar a:hover {
-        background: #fff;
+      .notice strong {
         color: var(--accent);
       }
 
-      main {
+      .workspace {
         display: grid;
+        grid-template-columns: minmax(420px, 0.92fr) minmax(520px, 1.08fr);
         gap: 18px;
+        align-items: start;
       }
 
-      section {
-        padding: 22px;
+      .editor-pane,
+      .preview-pane {
+        min-width: 0;
+      }
+
+      .tabs {
+        position: sticky;
+        top: 76px;
+        z-index: 12;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+
+      .tabs a {
+        padding: 8px 10px;
+        border-radius: 6px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .tabs a:hover,
+      .tabs a.is-active {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .sections {
+        display: grid;
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      section,
+      .preview-card {
+        padding: 18px;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: var(--surface);
         box-shadow: var(--shadow);
       }
 
-      section h2 {
-        margin: 0 0 16px;
-        font-size: 20px;
+      section h2,
+      .preview-card h2 {
+        margin: 0 0 14px;
+        font-size: 18px;
       }
 
       .grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
+        gap: 12px;
       }
 
       label {
@@ -172,7 +210,7 @@
         gap: 7px;
         color: var(--muted);
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 800;
       }
 
       input,
@@ -180,10 +218,17 @@
         width: 100%;
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.94);
         color: var(--ink);
         font: inherit;
         font-size: 15px;
+        outline: none;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: rgba(75, 116, 112, 0.55);
+        box-shadow: 0 0 0 3px rgba(75, 116, 112, 0.12);
       }
 
       input {
@@ -198,40 +243,124 @@
       }
 
       textarea.code {
-        min-height: 260px;
+        min-height: 230px;
         font-family: "Cascadia Code", Consolas, monospace;
         font-size: 13px;
         line-height: 1.55;
       }
 
-      .status {
-        min-height: 24px;
-        color: var(--muted);
-        white-space: pre-wrap;
+      .wide {
+        grid-column: 1 / -1;
       }
 
-      .status strong {
+      .status {
+        position: sticky;
+        bottom: 14px;
+        z-index: 18;
+        min-height: 42px;
+        margin: 14px 0 0;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--muted);
+        white-space: pre-wrap;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+
+      .status[data-tone="ok"] {
         color: var(--accent);
       }
 
-      @media (max-width: 860px) {
+      .status[data-tone="error"] {
+        color: var(--danger);
+      }
+
+      .preview-pane {
+        position: sticky;
+        top: 76px;
+      }
+
+      .preview-card {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .preview-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .preview-head h2 {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .preview-tools {
+        display: flex;
+        gap: 8px;
+      }
+
+      .viewport {
+        width: 100%;
+        height: calc(100vh - 172px);
+        min-height: 560px;
+        border: 0;
+        background: #fff;
+      }
+
+      .preview-card.is-mobile .viewport {
+        display: block;
+        width: 390px;
+        max-width: calc(100% - 28px);
+        height: 720px;
+        min-height: 720px;
+        margin: 14px auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      @media (max-width: 1100px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .preview-pane {
+          position: static;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .shell {
+          width: min(100% - 20px, 1520px);
+        }
+
         .topbar,
-        .layout {
+        .notice {
           display: block;
         }
 
         .actions {
           justify-content: flex-start;
-          margin-top: 14px;
+          margin-top: 12px;
         }
 
-        .sidebar {
-          position: static;
-          margin-bottom: 18px;
+        .workspace {
+          display: block;
         }
 
         .grid {
           grid-template-columns: 1fr;
+        }
+
+        .preview-pane {
+          margin-top: 16px;
         }
       }
     </style>
@@ -241,100 +370,127 @@
       <header class="topbar">
         <div class="brand">
           <h1>个人主页后台控制台</h1>
-          <p>修改后会保存到 <code>site-content.json</code>，前台页面会自动读取这份内容。</p>
+          <p>左侧修改内容，右侧实时预览；保存后写入 <code>site-content.json</code>，推送后同步到 GitHub Pages。</p>
         </div>
         <div class="actions">
-          <a class="button-link" href="index.html" target="_blank" rel="noopener">本地预览</a>
-          <a class="button-link" href="https://max0315.github.io/AI-NEWS/" target="_blank" rel="noopener">公网预览</a>
+          <button type="button" id="syncPreviewButton">同步预览</button>
           <button type="button" id="saveButton">保存内容</button>
           <button class="primary" type="button" id="publishButton">保存并推送</button>
         </div>
       </header>
 
-      <p class="notice">
-        使用方式：在项目目录运行 <code>node admin-server.js</code>，打开
-        <code>http://127.0.0.1:4315/admin.html</code>。如果直接从 GitHub Pages 打开后台，浏览器不能写入文件，只能查看界面。
-      </p>
+      <div class="notice">
+        <div>
+          <strong>本地控制台：</strong>请在项目目录运行 <code>node admin-server.js</code> 后使用本页面。公网不变时，优先用右侧“强制刷新公网”打开带时间戳的链接。
+        </div>
+        <a class="button-link" href="https://max0315.github.io/AI-NEWS/" target="_blank" rel="noopener">打开公网主页</a>
+      </div>
 
-      <div class="layout">
-        <nav class="sidebar" aria-label="后台栏目">
-          <a href="#basic">基础信息</a>
-          <a href="#hero">首屏内容</a>
-          <a href="#sections">栏目内容</a>
-          <a href="#contact">联系与弹窗</a>
-          <a href="#json">高级 JSON</a>
-        </nav>
+      <div class="workspace">
+        <div class="editor-pane">
+          <nav class="tabs" aria-label="后台栏目">
+            <a class="is-active" href="#basic">基础</a>
+            <a href="#hero">首屏</a>
+            <a href="#sections">栏目</a>
+            <a href="#contact">联系</a>
+            <a href="#json">JSON</a>
+          </nav>
 
-        <main>
-          <section id="basic">
-            <h2>基础信息</h2>
-            <div class="grid">
-              <label>网页标题 <input data-path="meta.title" /></label>
-              <label>网页描述 <input data-path="meta.description" /></label>
-              <label>品牌名称 <input data-path="brand.name" /></label>
-              <label>身份标签 <input data-path="brand.role" /></label>
-            </div>
-          </section>
+          <main class="sections">
+            <section id="basic">
+              <h2>基础信息</h2>
+              <div class="grid">
+                <label>网页标题 <input data-path="meta.title" /></label>
+                <label>网页描述 <input data-path="meta.description" /></label>
+                <label>品牌名称 <input data-path="brand.name" /></label>
+                <label>身份标签 <input data-path="brand.role" /></label>
+              </div>
+            </section>
 
-          <section id="hero">
-            <h2>首屏内容</h2>
-            <div class="grid">
-              <label>小标题 <input data-path="hero.eyebrow" /></label>
-              <label>主标题，换行用回车 <textarea data-path="hero.title" data-array-lines></textarea></label>
-              <label>介绍文字 <textarea data-path="hero.lede"></textarea></label>
-              <label>首屏按钮 JSON <textarea class="code" data-path="hero.actions" data-json></textarea></label>
-              <label>首屏数据 JSON <textarea class="code" data-path="hero.signals" data-json></textarea></label>
-            </div>
-          </section>
+            <section id="hero">
+              <h2>首屏内容</h2>
+              <div class="grid">
+                <label>小标题 <input data-path="hero.eyebrow" /></label>
+                <label>主标题，换行用回车 <textarea data-path="hero.title" data-array-lines></textarea></label>
+                <label class="wide">介绍文字 <textarea data-path="hero.lede"></textarea></label>
+                <label>首屏按钮 JSON <textarea class="code" data-path="hero.actions" data-json></textarea></label>
+                <label>首屏数据 JSON <textarea class="code" data-path="hero.signals" data-json></textarea></label>
+              </div>
+            </section>
 
-          <section id="sections">
-            <h2>栏目内容</h2>
-            <div class="grid">
-              <label>内容方向标题 <input data-path="topicsSection.title" /></label>
-              <label>内容方向说明 <textarea data-path="topicsSection.body"></textarea></label>
-              <label>内容方向卡片 JSON <textarea class="code" data-path="topics" data-json></textarea></label>
-              <label>精选文章区说明 <textarea data-path="writingSection.body"></textarea></label>
-              <label>文章卡片 JSON <textarea class="code" data-path="articles" data-json></textarea></label>
-              <label>影响力数据 JSON <textarea class="code" data-path="metrics" data-json></textarea></label>
-              <label>关于我标题 <input data-path="about.title" /></label>
-              <label>关于我正文，分段用回车 <textarea data-path="about.paragraphs" data-array-lines></textarea></label>
-              <label>内容方法标题 <input data-path="methodSection.title" /></label>
-              <label>内容方法说明 <textarea data-path="methodSection.body"></textarea></label>
-            </div>
-          </section>
+            <section id="sections">
+              <h2>栏目内容</h2>
+              <div class="grid">
+                <label>内容方向标题 <input data-path="topicsSection.title" /></label>
+                <label>内容方向说明 <textarea data-path="topicsSection.body"></textarea></label>
+                <label>内容方向卡片 JSON <textarea class="code" data-path="topics" data-json></textarea></label>
+                <label>精选文章说明 <textarea data-path="writingSection.body"></textarea></label>
+                <label>文章卡片 JSON <textarea class="code" data-path="articles" data-json></textarea></label>
+                <label>影响力数据 JSON <textarea class="code" data-path="metrics" data-json></textarea></label>
+                <label>关于我标题 <input data-path="about.title" /></label>
+                <label>关于我正文，分段用回车 <textarea data-path="about.paragraphs" data-array-lines></textarea></label>
+                <label>内容方法标题 <input data-path="methodSection.title" /></label>
+                <label>内容方法说明 <textarea data-path="methodSection.body"></textarea></label>
+              </div>
+            </section>
 
-          <section id="contact">
-            <h2>联系与弹窗</h2>
-            <div class="grid">
-              <label>联系区标题 <input data-path="contact.title" /></label>
-              <label>联系区说明 <textarea data-path="contact.body"></textarea></label>
-              <label>联系链接 JSON <textarea class="code" data-path="contact.links" data-json></textarea></label>
-              <label>按钮文案 <input data-path="contact.buttonLabel" /></label>
-              <label>弹窗标题 <input data-path="exchange.title" /></label>
-              <label>弹窗说明 <textarea data-path="exchange.note"></textarea></label>
-            </div>
-          </section>
+            <section id="contact">
+              <h2>联系与弹窗</h2>
+              <div class="grid">
+                <label>联系区标题 <input data-path="contact.title" /></label>
+                <label>联系区说明 <textarea data-path="contact.body"></textarea></label>
+                <label>联系链接 JSON <textarea class="code" data-path="contact.links" data-json></textarea></label>
+                <label>按钮文案 <input data-path="contact.buttonLabel" /></label>
+                <label>弹窗标题 <input data-path="exchange.title" /></label>
+                <label>弹窗说明 <textarea data-path="exchange.note"></textarea></label>
+              </div>
+            </section>
 
-          <section id="json">
-            <h2>高级 JSON</h2>
-            <label>完整内容配置 <textarea class="code" id="rawJson"></textarea></label>
-          </section>
+            <section id="json">
+              <h2>高级 JSON</h2>
+              <label>完整内容配置 <textarea class="code" id="rawJson"></textarea></label>
+            </section>
+          </main>
 
           <p class="status" id="status" role="status" aria-live="polite"></p>
-        </main>
+        </div>
+
+        <aside class="preview-pane" aria-label="实时预览">
+          <div class="preview-card" id="previewCard">
+            <div class="preview-head">
+              <h2>实时预览</h2>
+              <div class="preview-tools">
+                <button class="ghost" type="button" id="desktopButton">桌面</button>
+                <button class="ghost" type="button" id="mobileButton">手机</button>
+                <button class="ghost" type="button" id="reloadPreviewButton">刷新预览</button>
+                <a class="button-link" id="publicRefreshLink" href="https://max0315.github.io/AI-NEWS/?refresh=1" target="_blank" rel="noopener">强制刷新公网</a>
+              </div>
+            </div>
+            <iframe class="viewport" id="previewFrame" src="index.html?adminPreview=1" title="个人主页实时预览"></iframe>
+          </div>
+        </aside>
       </div>
     </div>
 
     <script>
       let content = {};
+      let liveTimer = null;
       const fields = Array.from(document.querySelectorAll("[data-path]"));
       const rawJson = document.querySelector("#rawJson");
       const statusText = document.querySelector("#status");
       const saveButton = document.querySelector("#saveButton");
       const publishButton = document.querySelector("#publishButton");
+      const syncPreviewButton = document.querySelector("#syncPreviewButton");
+      const previewFrame = document.querySelector("#previewFrame");
+      const previewCard = document.querySelector("#previewCard");
+      const reloadPreviewButton = document.querySelector("#reloadPreviewButton");
+      const desktopButton = document.querySelector("#desktopButton");
+      const mobileButton = document.querySelector("#mobileButton");
+      const publicRefreshLink = document.querySelector("#publicRefreshLink");
 
-      const setStatus = (message) => {
+      const setStatus = (message, tone = "") => {
         statusText.textContent = message;
+        statusText.dataset.tone = tone;
       };
 
       const getByPath = (source, path) =>
@@ -391,6 +547,33 @@
         rawJson.value = JSON.stringify(content, null, 2);
       };
 
+      const sendPreview = () => {
+        previewFrame.contentWindow?.postMessage(
+          {
+            type: "homepage-content-preview",
+            content,
+          },
+          window.location.origin
+        );
+      };
+
+      const schedulePreview = () => {
+        clearTimeout(liveTimer);
+        liveTimer = setTimeout(() => {
+          try {
+            collectFields();
+            sendPreview();
+            setStatus("已实时同步到右侧预览，保存后才会写入文件。", "ok");
+          } catch (error) {
+            setStatus(`当前字段格式有误：${error.message}`, "error");
+          }
+        }, 180);
+      };
+
+      const updatePublicRefreshLink = () => {
+        publicRefreshLink.href = `https://max0315.github.io/AI-NEWS/?refresh=${Date.now()}`;
+      };
+
       const loadContent = async () => {
         try {
           const response = await fetch("/api/content", { cache: "no-store" });
@@ -399,19 +582,22 @@
             const payload = await response.json();
             content = payload.content;
           } else {
-            const fallback = await fetch("site-content.json", { cache: "no-store" });
+            const fallback = await fetch(`site-content.json?_=${Date.now()}`, { cache: "no-store" });
             content = await fallback.json();
           }
 
           fillFields();
-          setStatus("内容已载入。");
+          sendPreview();
+          updatePublicRefreshLink();
+          setStatus("内容已载入，可以直接编辑并查看右侧实时预览。", "ok");
         } catch (error) {
-          setStatus(`内容载入失败：${error.message}`);
+          setStatus(`内容载入失败：${error.message}`, "error");
         }
       };
 
       const saveContent = async () => {
         collectFields();
+        sendPreview();
         saveButton.disabled = true;
         publishButton.disabled = true;
         setStatus("正在保存内容...");
@@ -428,9 +614,11 @@
             throw new Error(payload.message || "保存失败。");
           }
 
-          setStatus("内容已保存。打开本地预览可以立即查看效果。");
+          setStatus("内容已保存到 site-content.json。右侧预览已经是最新效果。", "ok");
+          return true;
         } catch (error) {
-          setStatus(`保存失败：请确认已经通过 node admin-server.js 启动后台服务。\n${error.message}`);
+          setStatus(`保存失败：请确认已经通过 node admin-server.js 启动后台服务。\n${error.message}`, "error");
+          return false;
         } finally {
           saveButton.disabled = false;
           publishButton.disabled = false;
@@ -438,8 +626,14 @@
       };
 
       const publishContent = async () => {
-        await saveContent();
+        const saved = await saveContent();
+
+        if (!saved) {
+          return;
+        }
+
         publishButton.disabled = true;
+        saveButton.disabled = true;
         setStatus("正在提交并推送到 GitHub Pages...");
 
         try {
@@ -450,35 +644,56 @@
             throw new Error(payload.message || "推送失败。");
           }
 
-          setStatus(`${payload.message}\n\n${(payload.steps || []).join("\n\n")}`);
+          updatePublicRefreshLink();
+          setStatus(`${payload.message}\n\n公网一般会在几十秒内刷新。若没变化，点击右侧“强制刷新公网”。`, "ok");
         } catch (error) {
-          setStatus(`推送失败：${error.message}`);
+          setStatus(`推送失败：${error.message}`, "error");
         } finally {
           publishButton.disabled = false;
+          saveButton.disabled = false;
         }
       };
 
-      rawJson.addEventListener("change", () => {
-        try {
-          content = JSON.parse(rawJson.value || "{}");
-          fillFields();
-          setStatus("高级 JSON 已同步到表单。");
-        } catch (error) {
-          setStatus(`JSON 格式错误：${error.message}`);
-        }
-      });
-      fields.forEach((field) => {
-        field.addEventListener("change", () => {
+      rawJson.addEventListener("input", () => {
+        clearTimeout(liveTimer);
+        liveTimer = setTimeout(() => {
           try {
-            collectFields();
-            setStatus("表单内容已同步，记得点击保存。");
+            content = JSON.parse(rawJson.value || "{}");
+            fillFields();
+            sendPreview();
+            setStatus("高级 JSON 已同步到表单和右侧预览。", "ok");
           } catch (error) {
-            setStatus(`字段格式错误：${error.message}`);
+            setStatus(`JSON 格式错误：${error.message}`, "error");
           }
+        }, 260);
+      });
+
+      fields.forEach((field) => {
+        field.addEventListener("input", schedulePreview);
+      });
+
+      document.querySelectorAll(".tabs a").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tabs a").forEach((item) => item.classList.remove("is-active"));
+          tab.classList.add("is-active");
         });
       });
+
+      previewFrame.addEventListener("load", () => {
+        setTimeout(sendPreview, 120);
+      });
+      syncPreviewButton.addEventListener("click", schedulePreview);
       saveButton.addEventListener("click", saveContent);
       publishButton.addEventListener("click", publishContent);
+      reloadPreviewButton.addEventListener("click", () => {
+        previewFrame.src = `index.html?adminPreview=${Date.now()}`;
+      });
+      desktopButton.addEventListener("click", () => {
+        previewCard.classList.remove("is-mobile");
+      });
+      mobileButton.addEventListener("click", () => {
+        previewCard.classList.add("is-mobile");
+      });
       loadContent();
     </script>
   </body>
