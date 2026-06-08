@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>个人主页后台控制台</title>
+    <style>
+      :root {
+        --ink: #161c1f;
+        --muted: #647077;
+        --paper: #f7f9f8;
+        --surface: rgba(255, 255, 255, 0.82);
+        --line: rgba(22, 28, 31, 0.13);
+        --accent: #183134;
+        --accent-soft: #d9e6e2;
+        --shadow: 0 22px 58px rgba(25, 34, 38, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          linear-gradient(rgba(247, 249, 248, 0.93), rgba(247, 249, 248, 0.96)),
+          url("assets/images/background-paper-texture.png"),
+          var(--paper);
+        font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.65;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 36px));
+        margin: 0 auto;
+        padding: 28px 0 48px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px 0;
+        background: rgba(247, 249, 248, 0.9);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: 0;
+      }
+
+      .brand p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      button,
+      .button-link {
+        min-height: 42px;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.62;
+      }
+
+      .notice {
+        margin: 18px 0;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: #243739;
+        font-size: 14px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 96px;
+        display: grid;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar a {
+        padding: 9px 10px;
+        border-radius: 6px;
+        color: var(--muted);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .sidebar a:hover {
+        background: #fff;
+        color: var(--accent);
+      }
+
+      main {
+        display: grid;
+        gap: 18px;
+      }
+
+      section {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      section h2 {
+        margin: 0 0 16px;
+        font-size: 20px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      label {
+        display: grid;
+        gap: 7px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--ink);
+        font: inherit;
+        font-size: 15px;
+      }
+
+      input {
+        min-height: 42px;
+        padding: 8px 12px;
+      }
+
+      textarea {
+        min-height: 108px;
+        padding: 10px 12px;
+        resize: vertical;
+      }
+
+      textarea.code {
+        min-height: 260px;
+        font-family: "Cascadia Code", Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .status {
+        min-height: 24px;
+        color: var(--muted);
+        white-space: pre-wrap;
+      }
+
+      .status strong {
+        color: var(--accent);
+      }
+
+      @media (max-width: 860px) {
+        .topbar,
+        .layout {
+          display: block;
+        }
+
+        .actions {
+          justify-content: flex-start;
+          margin-top: 14px;
+        }
+
+        .sidebar {
+          position: static;
+          margin-bottom: 18px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <h1>个人主页后台控制台</h1>
+          <p>修改后会保存到 <code>site-content.json</code>，前台页面会自动读取这份内容。</p>
+        </div>
+        <div class="actions">
+          <a class="button-link" href="index.html" target="_blank" rel="noopener">本地预览</a>
+          <a class="button-link" href="https://max0315.github.io/AI-NEWS/" target="_blank" rel="noopener">公网预览</a>
+          <button type="button" id="saveButton">保存内容</button>
+          <button class="primary" type="button" id="publishButton">保存并推送</button>
+        </div>
+      </header>
+
+      <p class="notice">
+        使用方式：在项目目录运行 <code>node admin-server.js</code>，打开
+        <code>http://127.0.0.1:4315/admin.html</code>。如果直接从 GitHub Pages 打开后台，浏览器不能写入文件，只能查看界面。
+      </p>
+
+      <div class="layout">
+        <nav class="sidebar" aria-label="后台栏目">
+          <a href="#basic">基础信息</a>
+          <a href="#hero">首屏内容</a>
+          <a href="#sections">栏目内容</a>
+          <a href="#contact">联系与弹窗</a>
+          <a href="#json">高级 JSON</a>
+        </nav>
+
+        <main>
+          <section id="basic">
+            <h2>基础信息</h2>
+            <div class="grid">
+              <label>网页标题 <input data-path="meta.title" /></label>
+              <label>网页描述 <input data-path="meta.description" /></label>
+              <label>品牌名称 <input data-path="brand.name" /></label>
+              <label>身份标签 <input data-path="brand.role" /></label>
+            </div>
+          </section>
+
+          <section id="hero">
+            <h2>首屏内容</h2>
+            <div class="grid">
+              <label>小标题 <input data-path="hero.eyebrow" /></label>
+              <label>主标题，换行用回车 <textarea data-path="hero.title" data-array-lines></textarea></label>
+              <label>介绍文字 <textarea data-path="hero.lede"></textarea></label>
+              <label>首屏按钮 JSON <textarea class="code" data-path="hero.actions" data-json></textarea></label>
+              <label>首屏数据 JSON <textarea class="code" data-path="hero.signals" data-json></textarea></label>
+            </div>
+          </section>
+
+          <section id="sections">
+            <h2>栏目内容</h2>
+            <div class="grid">
+              <label>内容方向标题 <input data-path="topicsSection.title" /></label>
+              <label>内容方向说明 <textarea data-path="topicsSection.body"></textarea></label>
+              <label>内容方向卡片 JSON <textarea class="code" data-path="topics" data-json></textarea></label>
+              <label>精选文章区说明 <textarea data-path="writingSection.body"></textarea></label>
+              <label>文章卡片 JSON <textarea class="code" data-path="articles" data-json></textarea></label>
+              <label>影响力数据 JSON <textarea class="code" data-path="metrics" data-json></textarea></label>
+              <label>关于我标题 <input data-path="about.title" /></label>
+              <label>关于我正文，分段用回车 <textarea data-path="about.paragraphs" data-array-lines></textarea></label>
+              <label>内容方法标题 <input data-path="methodSection.title" /></label>
+              <label>内容方法说明 <textarea data-path="methodSection.body"></textarea></label>
+            </div>
+          </section>
+
+          <section id="contact">
+            <h2>联系与弹窗</h2>
+            <div class="grid">
+              <label>联系区标题 <input data-path="contact.title" /></label>
+              <label>联系区说明 <textarea data-path="contact.body"></textarea></label>
+              <label>联系链接 JSON <textarea class="code" data-path="contact.links" data-json></textarea></label>
+              <label>按钮文案 <input data-path="contact.buttonLabel" /></label>
+              <label>弹窗标题 <input data-path="exchange.title" /></label>
+              <label>弹窗说明 <textarea data-path="exchange.note"></textarea></label>
+            </div>
+          </section>
+
+          <section id="json">
+            <h2>高级 JSON</h2>
+            <label>完整内容配置 <textarea class="code" id="rawJson"></textarea></label>
+          </section>
+
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      let content = {};
+      const fields = Array.from(document.querySelectorAll("[data-path]"));
+      const rawJson = document.querySelector("#rawJson");
+      const statusText = document.querySelector("#status");
+      const saveButton = document.querySelector("#saveButton");
+      const publishButton = document.querySelector("#publishButton");
+
+      const setStatus = (message) => {
+        statusText.textContent = message;
+      };
+
+      const getByPath = (source, path) =>
+        path.split(".").reduce((value, key) => (value ? value[key] : undefined), source);
+
+      const setByPath = (target, path, value) => {
+        const keys = path.split(".");
+        const last = keys.pop();
+        const parent = keys.reduce((current, key) => {
+          current[key] = current[key] || {};
+          return current[key];
+        }, target);
+        parent[last] = value;
+      };
+
+      const fillFields = () => {
+        fields.forEach((field) => {
+          const value = getByPath(content, field.dataset.path);
+
+          if (field.dataset.json !== undefined) {
+            field.value = JSON.stringify(value || [], null, 2);
+            return;
+          }
+
+          if (field.dataset.arrayLines !== undefined) {
+            field.value = Array.isArray(value) ? value.join("\n") : value || "";
+            return;
+          }
+
+          field.value = value || "";
+        });
+        rawJson.value = JSON.stringify(content, null, 2);
+      };
+
+      const collectFields = () => {
+        const nextContent = JSON.parse(rawJson.value || "{}");
+
+        fields.forEach((field) => {
+          let value = field.value;
+
+          if (field.dataset.json !== undefined) {
+            value = JSON.parse(field.value || "[]");
+          } else if (field.dataset.arrayLines !== undefined) {
+            value = field.value
+              .split("\n")
+              .map((line) => line.trim())
+              .filter(Boolean);
+          }
+
+          setByPath(nextContent, field.dataset.path, value);
+        });
+
+        content = nextContent;
+        rawJson.value = JSON.stringify(content, null, 2);
+      };
+
+      const loadContent = async () => {
+        try {
+          const response = await fetch("/api/content", { cache: "no-store" });
+
+          if (response.ok) {
+            const payload = await response.json();
+            content = payload.content;
+          } else {
+            const fallback = await fetch("site-content.json", { cache: "no-store" });
+            content = await fallback.json();
+          }
+
+          fillFields();
+          setStatus("内容已载入。");
+        } catch (error) {
+          setStatus(`内容载入失败：${error.message}`);
+        }
+      };
+
+      const saveContent = async () => {
+        collectFields();
+        saveButton.disabled = true;
+        publishButton.disabled = true;
+        setStatus("正在保存内容...");
+
+        try {
+          const response = await fetch("/api/content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content }),
+          });
+          const payload = await response.json();
+
+          if (!response.ok || !payload.ok) {
+            throw new Error(payload.message || "保存失败。");
+          }
+
+          setStatus("内容已保存。打开本地预览可以立即查看效果。");
+        } catch (error) {
+          setStatus(`保存失败：请确认已经通过 node admin-server.js 启动后台服务。\n${error.message}`);
+        } finally {
+          saveButton.disabled = false;
+          publishButton.disabled = false;
+        }
+      };
+
+      const publishContent = async () => {
+        await saveContent();
+        publishButton.disabled = true;
+        setStatus("正在提交并推送到 GitHub Pages...");
+
+        try {
+          const response = await fetch("/api/publish", { method: "POST" });
+          const payload = await response.json();
+
+          if (!response.ok || !payload.ok) {
+            throw new Error(payload.message || "推送失败。");
+          }
+
+          setStatus(`${payload.message}\n\n${(payload.steps || []).join("\n\n")}`);
+        } catch (error) {
+          setStatus(`推送失败：${error.message}`);
+        } finally {
+          publishButton.disabled = false;
+        }
+      };
+
+      rawJson.addEventListener("change", () => {
+        try {
+          content = JSON.parse(rawJson.value || "{}");
+          fillFields();
+          setStatus("高级 JSON 已同步到表单。");
+        } catch (error) {
+          setStatus(`JSON 格式错误：${error.message}`);
+        }
+      });
+      fields.forEach((field) => {
+        field.addEventListener("change", () => {
+          try {
+            collectFields();
+            setStatus("表单内容已同步，记得点击保存。");
+          } catch (error) {
+            setStatus(`字段格式错误：${error.message}`);
+          }
+        });
+      });
+      saveButton.addEventListener("click", saveContent);
+      publishButton.addEventListener("click", publishContent);
+      loadContent();
+    </script>
+  </body>
+</html>

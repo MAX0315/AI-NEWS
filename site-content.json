@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "title": "Ma Xi / AI 博主 - 用 AI 重新理解创作、效率与认知",
+    "description": "Ma Xi 的 AI 博主个人主页，记录 AI 工具、智能体、知识管理、内容生产和普通人如何使用 AI 的长期观察。"
+  },
+  "brand": {
+    "name": "Ma Xi",
+    "role": "AI 博主"
+  },
+  "navigation": [
+    { "label": "内容方向", "href": "#topics" },
+    { "label": "精选文章", "href": "#writing" },
+    { "label": "关于我", "href": "#about" },
+    { "label": "联系", "href": "#contact" }
+  ],
+  "hero": {
+    "eyebrow": "AI Creator / Tool Researcher / Long-form Notes",
+    "title": ["用 AI 重新理解", "创作、效率与认知。"],
+    "lede": "我记录 AI 工具、智能体、知识管理和内容生产的真实用法。相比追热点，我更关心一个普通创作者如何把 AI 变成稳定、可复用、能提升判断力的工作系统。",
+    "actions": [
+      { "label": "阅读我的观点", "href": "#writing" },
+      { "label": "了解内容方向", "href": "#topics" },
+      { "label": "站酷主页", "href": "https://zhanku.zcool.com.cn/" }
+    ],
+    "signals": [
+      { "value": "120+", "label": "AI 笔记" },
+      { "value": "36", "label": "工具实测" },
+      { "value": "4", "label": "长期专题" }
+    ]
+  },
+  "topicsSection": {
+    "eyebrow": "Content Map",
+    "title": "我专研的 AI 方向",
+    "body": "不只介绍工具，也拆解工具背后的工作流、认知习惯和可迁移的方法。每一个方向都服务于一个问题：AI 到底怎样进入日常工作，而不是停留在演示里。"
+  },
+  "topics": [
+    { "index": "01", "title": "AI 工具实测", "body": "从写作、搜索、剪辑到自动化，记录工具真正好用的边界、坑点和适合的人群。" },
+    { "index": "02", "title": "智能体与自动化", "body": "关注 Agent、工作流编排、浏览器自动化和个人助手，把复杂任务拆成可靠步骤。" },
+    { "index": "03", "title": "AI 写作与表达", "body": "探索如何用 AI 辅助选题、结构、改稿和风格训练，而不是让文字变得更空泛。" },
+    { "index": "04", "title": "知识管理", "body": "把碎片信息整理成可检索、可复盘、可生长的个人知识库，让内容生产有长期积累。" },
+    { "index": "05", "title": "生产力系统", "body": "研究 AI 如何接入日程、任务、文档、表格和复盘，让效率提升落到每天的动作里。" },
+    { "index": "06", "title": "普通人的 AI 方法", "body": "把复杂概念翻译成可执行的使用方法，让非技术背景的人也能建立自己的 AI 工作台。" }
+  ],
+  "writingSection": {
+    "eyebrow": "Selected Writing",
+    "title": "精选文章与选题栏目",
+    "body": "这些是我会持续写下去的主题：既有工具评测，也有面向创作者和知识工作者的方法论。"
+  },
+  "articles": [
+    {
+      "meta": "AI / Thinking Tools",
+      "title": "把 AI 变成思考伙伴，而不是答案机器",
+      "body": "好的提示词不是命令模型替你思考，而是搭建一个能反问、能校准、能陪你推演的认知空间。",
+      "state": "计划更新",
+      "href": "#",
+      "image": "assets/images/article-ai-companion-person.png",
+      "alt": "一位创作者在简约工作室中使用 AI 界面进行思考"
+    },
+    {
+      "meta": "Agent / Workflow",
+      "title": "智能体工作流入门：从一次任务到一套系统",
+      "body": "Agent 真正有价值的地方，是把搜索、判断、执行和复盘串起来，让重复任务逐渐变成流程资产。",
+      "state": "深度拆解",
+      "href": "#",
+      "image": "assets/images/article-engineering-systems.png",
+      "alt": "模块化玻璃结构，象征软件系统与智能体工作流"
+    },
+    {
+      "meta": "Knowledge / Practice",
+      "title": "个人知识库的 AI 改造：让笔记重新回答你",
+      "body": "笔记不是资料仓库，而是一套和未来的自己重新相遇的索引系统。AI 让这套系统开始有了对话能力。",
+      "state": "长期专题",
+      "href": "#",
+      "image": "assets/images/article-knowledge-archive.png",
+      "alt": "精致的个人知识档案，包含笔记本和索引卡片"
+    }
+  ],
+  "metricsSection": {
+    "eyebrow": "Impact Snapshot",
+    "title": "用可复盘的内容，陪读者一起升级 AI 工作方式"
+  },
+  "metrics": [
+    { "value": 120, "label": "篇 AI 观察与笔记" },
+    { "value": 36, "label": "个工具实测案例" },
+    { "value": 8000, "label": "位内容读者" },
+    { "value": 4, "label": "个长期专题" }
+  ],
+  "about": {
+    "eyebrow": "About",
+    "title": "我在工具、系统和表达之间来回行走。",
+    "paragraphs": [
+      "我是一名 AI 博主，长期关注新工具如何进入真实工作：哪些功能只是演示时漂亮，哪些方法能稳定提高创作质量，哪些自动化值得被保留下来。",
+      "我更喜欢把复杂概念拆成普通人能立刻尝试的步骤。这里的内容不会只追逐模型参数，而是回到创作者、知识工作者和独立个体每天会遇到的问题。"
+    ],
+    "tags": ["实测优先", "长期主义", "工具为人服务"]
+  },
+  "methodSection": {
+    "eyebrow": "Method",
+    "title": "我的内容方法论",
+    "body": "AI 内容很容易变成新闻搬运。我的做法是把每一个选题放回使用现场，先验证，再总结，最后沉淀成可复用的方法。"
+  },
+  "methods": [
+    { "label": "Observe", "title": "观察", "body": "跟踪模型、产品和创作者工作流的变化，找到真正影响日常使用的信号。" },
+    { "label": "Test", "title": "实测", "body": "用真实任务测试工具，而不是只看发布会案例，记录成功条件和失败边界。" },
+    { "label": "Explain", "title": "拆解", "body": "把技术概念翻译成结构、步骤和判断标准，让读者知道如何迁移到自己的场景。" },
+    { "label": "Review", "title": "复盘", "body": "定期回看工具和方法是否仍然有效，把短期技巧沉淀成长期系统。" }
+  ],
+  "contact": {
+    "eyebrow": "Subscribe / Contact",
+    "title": "让下一次关于 AI 的对话，从一个好问题开始。",
+    "body": "如果你想交流 AI 工具、内容创作、知识管理、智能体工作流，或者希望一起打磨一个面向普通人的 AI 使用方法，可以从这些入口找到我。",
+    "links": [
+      { "label": "邮箱：mx22154@163.com", "href": "mailto:mx22154@163.com" },
+      { "label": "联系方式：19529307323", "href": "tel:19529307323" },
+      { "label": "站酷主页", "href": "https://zhanku.zcool.com.cn/" },
+      { "label": "GitHub", "href": "#" },
+      { "label": "X / Twitter", "href": "#" }
+    ],
+    "buttonLabel": "学习交流"
+  },
+  "exchange": {
+    "eyebrow": "Learning Exchange",
+    "title": "留下微信，我们继续聊 AI 学习与实践。",
+    "note": "适合交流 AI 工具实测、智能体工作流、内容创作、知识管理和个人效率系统。"
+  },
+  "footer": {
+    "copyright": "© 2026 Ma Xi / AI 博主",
+    "backToTop": "返回顶部",
+    "backToTopIcon": "↑"
+  }
+}
