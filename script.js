@@ -181,6 +181,7 @@ exchangeForm?.addEventListener("submit", async (event) => {
         phone: wechat,
         interest: topic,
         message,
+        consent: true,
         source_page: window.location.pathname || "/",
         metadata: {
           contact_channel: "wechat",
@@ -190,14 +191,15 @@ exchangeForm?.addEventListener("submit", async (event) => {
     });
 
     if (!response.ok) {
-      throw new Error(`提交失败：${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`提交失败：${response.status} ${errorText}`);
     }
 
     exchangeForm.reset();
     exchangeStatus.textContent = "已收到你的登记信息，我会尽快联系你。";
   } catch (error) {
     console.error(error);
-    exchangeStatus.textContent = "暂时无法提交，请稍后再试。";
+    exchangeStatus.textContent = "暂时无法提交，请稍后再试，或刷新页面后重新提交。";
   } finally {
     submitButton.disabled = false;
   }
