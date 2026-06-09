@@ -400,10 +400,12 @@
             <section id="basic">
               <h2>基础信息</h2>
               <div class="grid">
-                <label>网页标题 <input data-path="meta.title" /></label>
-                <label>网页描述 <input data-path="meta.description" /></label>
                 <label>品牌名称 <input data-path="brand.name" /></label>
                 <label>身份标签 <input data-path="brand.role" /></label>
+                <label>首页可见主标题，换行用回车 <textarea data-path="hero.title" data-array-lines></textarea></label>
+                <label>首页可见说明 <textarea data-path="hero.lede"></textarea></label>
+                <label>浏览器标签标题，不显示在页面正文 <input data-path="meta.title" /></label>
+                <label>搜索描述，不显示在页面正文 <input data-path="meta.description" /></label>
               </div>
             </section>
 
@@ -411,8 +413,6 @@
               <h2>首屏内容</h2>
               <div class="grid">
                 <label>小标题 <input data-path="hero.eyebrow" /></label>
-                <label>主标题，换行用回车 <textarea data-path="hero.title" data-array-lines></textarea></label>
-                <label class="wide">介绍文字 <textarea data-path="hero.lede"></textarea></label>
                 <label>首屏按钮 JSON <textarea class="code" data-path="hero.actions" data-json></textarea></label>
                 <label>首屏数据 JSON <textarea class="code" data-path="hero.signals" data-json></textarea></label>
               </div>
