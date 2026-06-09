@@ -21,6 +21,16 @@ const publicFiles = [
   "site-content.json",
   "admin.html",
   ".nojekyll",
+  "stock-market-live.html",
+  "ai-daily-latest.html",
+  "ai-daily-2026-06-08.html",
+  "ai-weekly-news.html",
+  "ai-weekly-news.css",
+  "ai-weekly-news-20260603.xml",
+  "ai-weekly-news-image2-blue-poster-edition-20260603.xml",
+  "ai-weekly-news-poster-edition-20260603.xml",
+  "ai-weekly-news-revised-20260603.xml",
+  "ai-weekly-news-visual-cards-20260603.xml",
 ];
 
 const mimeTypes = {
@@ -28,6 +38,7 @@ const mimeTypes = {
   ".html": "text/html",
   ".js": "text/javascript",
   ".json": "application/json",
+  ".xml": "application/xml",
   ".png": "image/png",
   ".svg": "image/svg+xml",
   ".jpg": "image/jpeg",
