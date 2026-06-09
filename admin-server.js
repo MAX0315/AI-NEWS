@@ -10,6 +10,9 @@ const port = Number(process.env.ADMIN_PORT || 4315);
 const contentFile = path.join(rootDir, "site-content.json");
 const deployDir = path.join(rootDir, ".deploy-personal-site");
 const netlifyProductionUrl = "https://flourishing-sprite-5edd07.netlify.app/";
+const localAdminUrl = `http://127.0.0.1:${port}/admin.html`;
+const publicAdminUrl = `${netlifyProductionUrl}admin.html`;
+const feishuWebhookUrl = process.env.FEISHU_WEBHOOK_URL || process.env.FEISHU_WEBHOOK;
 
 const publicFiles = [
   "index.html",
@@ -278,6 +281,81 @@ const deployToNetlify = async () => {
   }
 };
 
+const notifyFeishuPublish = async () => {
+  if (!feishuWebhookUrl) {
+    return { ok: true, skipped: true, message: "未配置 FEISHU_WEBHOOK_URL，已跳过飞书通知。" };
+  }
+
+  const payload = {
+    msg_type: "interactive",
+    card: {
+      config: { wide_screen_mode: true },
+      header: {
+        template: "turquoise",
+        title: { tag: "plain_text", content: "个人网站已发布更新" },
+      },
+      elements: [
+        {
+          tag: "div",
+          text: {
+            tag: "lark_md",
+            content:
+              `**发布状态：** 后台内容已保存并同步部署到 Netlify。\n` +
+              `**本地后台网址：** ${localAdminUrl}\n` +
+              `**公网网址：** ${netlifyProductionUrl}`,
+          },
+        },
+        {
+          tag: "div",
+          text: {
+            tag: "lark_md",
+            content: `**公网后台预览：** ${publicAdminUrl}`,
+          },
+        },
+        {
+          tag: "action",
+          actions: [
+            {
+              tag: "button",
+              text: { tag: "plain_text", content: "打开公网网站" },
+              type: "primary",
+              url: `${netlifyProductionUrl}?refresh=${Date.now()}`,
+            },
+            {
+              tag: "button",
+              text: { tag: "plain_text", content: "打开本地后台" },
+              type: "default",
+              url: localAdminUrl,
+            },
+            {
+              tag: "button",
+              text: { tag: "plain_text", content: "打开公网后台" },
+              type: "default",
+              url: `${publicAdminUrl}?refresh=${Date.now()}`,
+            },
+          ],
+        },
+      ],
+    },
+  };
+
+  try {
+    const response = await fetch(feishuWebhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      return { ok: false, message: `飞书通知发送失败：${response.status}` };
+    }
+
+    return { ok: true, message: "飞书通知已发送。" };
+  } catch (error) {
+    return { ok: false, message: `飞书通知发送失败：${error.message}` };
+  }
+};
+
 const publishSite = async () => {
   const github = await publishToGitHub();
 
@@ -296,11 +374,15 @@ const publishSite = async () => {
     };
   }
 
+  const feishu = await notifyFeishuPublish();
+
   return {
     ok: true,
     steps,
     url: netlify.url,
-    message: `${github.message}\n${netlify.message}`,
+    localAdminUrl,
+    publicAdminUrl,
+    message: `${github.message}\n${netlify.message}\n${feishu.message}`,
   };
 };
 
