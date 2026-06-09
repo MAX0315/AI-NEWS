@@ -370,7 +370,7 @@
       <header class="topbar">
         <div class="brand">
           <h1>个人主页后台控制台</h1>
-          <p>左侧修改内容，右侧实时预览；保存后写入 <code>site-content.json</code>，推送后同步到 GitHub Pages。</p>
+          <p>左侧修改内容，右侧实时预览；保存后写入 <code>site-content.json</code>，推送后同步到 Netlify 生产站。</p>
         </div>
         <div class="actions">
           <button type="button" id="syncPreviewButton">同步预览</button>
@@ -383,7 +383,7 @@
         <div>
           <strong>本地控制台：</strong>请在项目目录运行 <code>node admin-server.js</code> 后使用本页面。公网不变时，优先用右侧“强制刷新公网”打开带时间戳的链接。
         </div>
-        <a class="button-link" href="https://max0315.github.io/AI-NEWS/" target="_blank" rel="noopener">打开公网主页</a>
+        <a class="button-link" href="https://flourishing-sprite-5edd07.netlify.app/" target="_blank" rel="noopener">打开公网主页</a>
       </div>
 
       <div class="workspace">
@@ -463,7 +463,7 @@
                 <button class="ghost" type="button" id="desktopButton">桌面</button>
                 <button class="ghost" type="button" id="mobileButton">手机</button>
                 <button class="ghost" type="button" id="reloadPreviewButton">刷新预览</button>
-                <a class="button-link" id="publicRefreshLink" href="https://max0315.github.io/AI-NEWS/?refresh=1" target="_blank" rel="noopener">强制刷新公网</a>
+                <a class="button-link" id="publicRefreshLink" href="https://flourishing-sprite-5edd07.netlify.app/?refresh=1" target="_blank" rel="noopener">强制刷新公网</a>
               </div>
             </div>
             <iframe class="viewport" id="previewFrame" src="index.html?adminPreview=1" title="个人主页实时预览"></iframe>
@@ -571,7 +571,7 @@
       };
 
       const updatePublicRefreshLink = () => {
-        publicRefreshLink.href = `https://max0315.github.io/AI-NEWS/?refresh=${Date.now()}`;
+        publicRefreshLink.href = `https://flourishing-sprite-5edd07.netlify.app/?refresh=${Date.now()}`;
       };
 
       const loadContent = async () => {
@@ -634,7 +634,7 @@
 
         publishButton.disabled = true;
         saveButton.disabled = true;
-        setStatus("正在提交并推送到 GitHub Pages...");
+        setStatus("正在提交并同步部署到 Netlify 生产站...");
 
         try {
           const response = await fetch("/api/publish", { method: "POST" });
@@ -645,7 +645,7 @@
           }
 
           updatePublicRefreshLink();
-          setStatus(`${payload.message}\n\n公网一般会在几十秒内刷新。若没变化，点击右侧“强制刷新公网”。`, "ok");
+          setStatus(`${payload.message}\n\nNetlify 公网站通常会在几十秒内刷新。若没变化，点击右侧“强制刷新公网”。`, "ok");
         } catch (error) {
           setStatus(`推送失败：${error.message}`, "error");
         } finally {

@@ -8,7 +8,29 @@ const { spawn } = require("child_process");
 const rootDir = __dirname;
 const port = Number(process.env.ADMIN_PORT || 4315);
 const contentFile = path.join(rootDir, "site-content.json");
-const allowedFiles = new Set(["/", "/admin.html", "/site-content.json"]);
+const deployDir = path.join(rootDir, ".deploy-personal-site");
+const netlifyProductionUrl = "https://flourishing-sprite-5edd07.netlify.app/";
+
+const publicFiles = [
+  "index.html",
+  "styles.css",
+  "script.js",
+  "site-content.json",
+  "admin.html",
+  ".nojekyll",
+];
+
+const mimeTypes = {
+  ".css": "text/css",
+  ".html": "text/html",
+  ".js": "text/javascript",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".svg": "image/svg+xml",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+};
 
 const sendJson = (response, statusCode, payload) => {
   response.writeHead(statusCode, {
@@ -16,6 +38,17 @@ const sendJson = (response, statusCode, payload) => {
     "Cache-Control": "no-store",
   });
   response.end(JSON.stringify(payload));
+};
+
+const ensureInsideRoot = (targetPath) => {
+  const resolvedRoot = path.resolve(rootDir);
+  const resolvedTarget = path.resolve(targetPath);
+
+  if (!resolvedTarget.startsWith(resolvedRoot)) {
+    throw new Error(`拒绝访问项目目录外的路径：${resolvedTarget}`);
+  }
+
+  return resolvedTarget;
 };
 
 const readRequestBody = (request) =>
@@ -33,12 +66,22 @@ const readRequestBody = (request) =>
     request.on("error", reject);
   });
 
-const runGit = (args) =>
+const runCommand = (command, args, options = {}) =>
   new Promise((resolve) => {
-    const child = spawn("git", args, {
+    const child = spawn(command, args, {
       cwd: rootDir,
       shell: false,
       windowsHide: true,
+      env: {
+        ...process.env,
+        HTTP_PROXY: "",
+        HTTPS_PROXY: "",
+        ALL_PROXY: "",
+        http_proxy: "",
+        https_proxy: "",
+        all_proxy: "",
+      },
+      ...options,
     });
     let output = "";
 
@@ -53,29 +96,62 @@ const runGit = (args) =>
     });
   });
 
+const runGit = (args) => runCommand("git", args);
+
+const prepareDeployDirectory = () => {
+  const target = ensureInsideRoot(deployDir);
+
+  if (fs.existsSync(target)) {
+    fs.rmSync(target, { recursive: true, force: true });
+  }
+
+  fs.mkdirSync(target, { recursive: true });
+
+  publicFiles.forEach((file) => {
+    const source = path.join(rootDir, file);
+
+    if (fs.existsSync(source)) {
+      fs.copyFileSync(source, path.join(target, file));
+    }
+  });
+
+  const assetsSource = path.join(rootDir, "assets", "images");
+  const assetsTarget = path.join(target, "assets", "images");
+
+  if (fs.existsSync(assetsSource)) {
+    fs.mkdirSync(path.dirname(assetsTarget), { recursive: true });
+    fs.cpSync(assetsSource, assetsTarget, { recursive: true });
+  }
+
+  return target;
+};
+
+const cleanupDeployDirectory = () => {
+  const target = ensureInsideRoot(deployDir);
+
+  if (fs.existsSync(target)) {
+    fs.rmSync(target, { recursive: true, force: true });
+  }
+};
+
 const publishToGitHub = async () => {
   const steps = [];
 
-  for (const args of [
-    ["add", "site-content.json", "script.js", "admin.html", "admin-server.js"],
-    ["diff", "--cached", "--quiet"],
-  ]) {
-    const result = await runGit(args);
-    steps.push(`git ${args.join(" ")}\n${result.output || "(无输出)"}`);
-
-    if (args[0] === "diff" && result.code === 0) {
-      return { ok: true, skipped: true, steps, message: "没有检测到需要提交的内容。" };
-    }
-
-    if (args[0] !== "diff" && result.code !== 0) {
-      return { ok: false, steps, message: result.output || "Git 暂存失败。" };
-    }
+  const add = await runGit(["add", "site-content.json", "script.js", "admin.html", "admin-server.js"]);
+  steps.push(`git add\n${add.output || "(无输出)"}`);
+  if (add.code !== 0) {
+    return { ok: false, steps, message: add.output || "Git 暂存失败。" };
   }
 
-  const commit = await runGit(["commit", "-m", "Update homepage content"]);
-  steps.push(`git commit -m "Update homepage content"\n${commit.output || "(无输出)"}`);
-  if (commit.code !== 0) {
-    return { ok: false, steps, message: commit.output || "Git 提交失败。" };
+  const diff = await runGit(["diff", "--cached", "--quiet"]);
+  steps.push(`git diff --cached --quiet\n${diff.output || "(无输出)"}`);
+
+  if (diff.code !== 0) {
+    const commit = await runGit(["commit", "-m", "Update homepage content"]);
+    steps.push(`git commit -m "Update homepage content"\n${commit.output || "(无输出)"}`);
+    if (commit.code !== 0) {
+      return { ok: false, steps, message: commit.output || "Git 提交失败。" };
+    }
   }
 
   const pushMaster = await runGit(["push", "origin", "master"]);
@@ -90,22 +166,93 @@ const publishToGitHub = async () => {
     return { ok: false, steps, message: pushPages.output || "推送 gh-pages 失败。" };
   }
 
-  return { ok: true, skipped: false, steps, message: "已提交并推送到 GitHub Pages。" };
+  return { ok: true, steps, message: "已提交并推送到 GitHub。" };
 };
+
+const deployToNetlify = async () => {
+  const steps = [];
+  const deployScript = path.join(rootDir, "scripts", "deploy-netlify-production.ps1");
+
+  if (!fs.existsSync(deployScript)) {
+    return {
+      ok: false,
+      steps,
+      message: "没有找到 Netlify 部署脚本 scripts/deploy-netlify-production.ps1。",
+    };
+  }
+
+  const preparedDir = prepareDeployDirectory();
+
+  try {
+    const result = await runCommand("powershell", [
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      deployScript,
+      "-DeployDir",
+      preparedDir,
+    ]);
+    steps.push(`Netlify deploy\n${result.output || "(无输出)"}`);
+
+    if (result.code !== 0) {
+      return { ok: false, steps, message: result.output || "Netlify 部署失败。" };
+    }
+
+    return {
+      ok: true,
+      steps,
+      message: `Netlify 生产站已更新：${netlifyProductionUrl}`,
+      url: netlifyProductionUrl,
+    };
+  } finally {
+    cleanupDeployDirectory();
+  }
+};
+
+const publishSite = async () => {
+  const github = await publishToGitHub();
+
+  if (!github.ok) {
+    return github;
+  }
+
+  const netlify = await deployToNetlify();
+  const steps = [...(github.steps || []), ...(netlify.steps || [])];
+
+  if (!netlify.ok) {
+    return {
+      ok: false,
+      steps,
+      message: `${github.message}\n但 Netlify 同步失败：${netlify.message}`,
+    };
+  }
+
+  return {
+    ok: true,
+    steps,
+    url: netlify.url,
+    message: `${github.message}\n${netlify.message}`,
+  };
+};
+
+const isAllowedStaticPath = (relativePath) =>
+  publicFiles.includes(relativePath) ||
+  relativePath.startsWith(path.join("assets", "images"));
 
 const serveStatic = (request, response) => {
   const url = new URL(request.url, `http://127.0.0.1:${port}`);
   const pathname = url.pathname === "/" ? "/admin.html" : url.pathname;
+  const relativePath = path.normalize(decodeURIComponent(pathname).replace(/^\/+/, ""));
 
-  if (!allowedFiles.has(pathname)) {
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath) || !isAllowedStaticPath(relativePath)) {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("未找到页面。");
     return;
   }
 
-  const filePath = path.join(rootDir, pathname.slice(1));
+  const filePath = ensureInsideRoot(path.join(rootDir, relativePath));
   const ext = path.extname(filePath);
-  const contentType = ext === ".json" ? "application/json" : "text/html";
+  const contentType = mimeTypes[ext] || "application/octet-stream";
 
   fs.readFile(filePath, (error, data) => {
     if (error) {
@@ -152,7 +299,7 @@ const server = http.createServer(async (request, response) => {
   }
 
   if (request.method === "POST" && request.url.startsWith("/api/publish")) {
-    const result = await publishToGitHub();
+    const result = await publishSite();
     sendJson(response, result.ok ? 200 : 500, result);
     return;
   }
