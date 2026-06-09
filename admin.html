@@ -475,6 +475,7 @@
     <script>
       let content = {};
       let liveTimer = null;
+      let canPublish = false;
       const fields = Array.from(document.querySelectorAll("[data-path]"));
       const rawJson = document.querySelector("#rawJson");
       const statusText = document.querySelector("#status");
@@ -581,21 +582,36 @@
           if (response.ok) {
             const payload = await response.json();
             content = payload.content;
+            canPublish = true;
           } else {
             const fallback = await fetch(`site-content.json?_=${Date.now()}`, { cache: "no-store" });
             content = await fallback.json();
+            canPublish = false;
           }
 
           fillFields();
           sendPreview();
           updatePublicRefreshLink();
-          setStatus("内容已载入，可以直接编辑并查看右侧实时预览。", "ok");
+          if (canPublish) {
+            saveButton.disabled = false;
+            publishButton.disabled = false;
+            setStatus("内容已载入，可以直接编辑并查看右侧实时预览。保存并推送后会同步到 Netlify。", "ok");
+          } else {
+            saveButton.disabled = true;
+            publishButton.disabled = true;
+            setStatus("当前打开的是公网只读后台，只能临时编辑预览，不能保存或发布。请在本地项目目录运行 node admin-server.js 后打开 http://127.0.0.1:4315/admin.html。", "error");
+          }
         } catch (error) {
           setStatus(`内容载入失败：${error.message}`, "error");
         }
       };
 
       const saveContent = async () => {
+        if (!canPublish) {
+          setStatus("当前是公网只读后台，无法保存。请使用本地后台：http://127.0.0.1:4315/admin.html", "error");
+          return false;
+        }
+
         collectFields();
         sendPreview();
         saveButton.disabled = true;
@@ -626,6 +642,11 @@
       };
 
       const publishContent = async () => {
+        if (!canPublish) {
+          setStatus("当前是公网只读后台，无法发布。请先在本地运行 node admin-server.js，再打开本地后台。", "error");
+          return;
+        }
+
         const saved = await saveContent();
 
         if (!saved) {
