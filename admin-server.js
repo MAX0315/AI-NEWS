@@ -32,6 +32,13 @@ const mimeTypes = {
   ".webp": "image/webp",
 };
 
+const allowedUploadTypes = new Map([
+  ["image/png", ".png"],
+  ["image/jpeg", ".jpg"],
+  ["image/webp", ".webp"],
+  ["image/svg+xml", ".svg"],
+]);
+
 const sendJson = (response, statusCode, payload) => {
   response.writeHead(statusCode, {
     "Content-Type": "application/json; charset=utf-8",
@@ -65,6 +72,68 @@ const readRequestBody = (request) =>
     request.on("end", () => resolve(body));
     request.on("error", reject);
   });
+
+const readBinaryRequestBody = (request, limit = 12 * 1024 * 1024) =>
+  new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+
+    request.on("data", (chunk) => {
+      size += chunk.length;
+
+      if (size > limit) {
+        reject(new Error("图片文件过大，请上传 12MB 以内的图片。"));
+        request.destroy();
+        return;
+      }
+
+      chunks.push(chunk);
+    });
+    request.on("end", () => resolve(Buffer.concat(chunks)));
+    request.on("error", reject);
+  });
+
+const slugifyFilename = (name) => {
+  const parsed = path.parse(name);
+  const safeBase =
+    parsed.name
+      .normalize("NFKD")
+      .replace(/[^\w\u4e00-\u9fa5-]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .toLowerCase() || "image";
+
+  return safeBase.slice(0, 60);
+};
+
+const saveUploadedImage = async (request) => {
+  const contentType = String(request.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
+  const ext = allowedUploadTypes.get(contentType);
+
+  if (!ext) {
+    throw new Error("只支持 PNG、JPG、WebP、SVG 图片。");
+  }
+
+  const body = await readBinaryRequestBody(request);
+
+  if (!body.length) {
+    throw new Error("没有收到图片文件。");
+  }
+
+  const uploadDir = ensureInsideRoot(path.join(rootDir, "assets", "images", "uploads"));
+  fs.mkdirSync(uploadDir, { recursive: true });
+
+  const originalName = decodeURIComponent(String(request.headers["x-file-name"] || ""));
+  const filename = `${Date.now()}-${slugifyFilename(originalName)}${ext}`;
+  const targetPath = ensureInsideRoot(path.join(uploadDir, filename));
+
+  fs.writeFileSync(targetPath, body);
+
+  return {
+    path: `assets/images/uploads/${filename}`,
+    filename,
+  };
+};
 
 const runCommand = (command, args, options = {}) =>
   new Promise((resolve) => {
@@ -137,7 +206,7 @@ const cleanupDeployDirectory = () => {
 const publishToGitHub = async () => {
   const steps = [];
 
-  const add = await runGit(["add", "site-content.json", "script.js", "admin.html", "admin-server.js"]);
+  const add = await runGit(["add", "site-content.json", "script.js", "admin.html", "admin-server.js", "assets/images/uploads"]);
   steps.push(`git add\n${add.output || "(无输出)"}`);
   if (add.code !== 0) {
     return { ok: false, steps, message: add.output || "Git 暂存失败。" };
@@ -294,6 +363,16 @@ const server = http.createServer(async (request, response) => {
       sendJson(response, 200, { ok: true, message: "内容已保存到 site-content.json。" });
     } catch (error) {
       sendJson(response, 500, { ok: false, message: error.message });
+    }
+    return;
+  }
+
+  if (request.method === "POST" && request.url.startsWith("/api/upload-image")) {
+    try {
+      const uploaded = await saveUploadedImage(request);
+      sendJson(response, 200, { ok: true, ...uploaded });
+    } catch (error) {
+      sendJson(response, 400, { ok: false, message: error.message });
     }
     return;
   }

@@ -176,6 +176,22 @@
         background: var(--accent-soft);
       }
 
+      .image-field {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: end;
+      }
+
+      .image-field label {
+        min-width: 0;
+      }
+
+      .image-field button {
+        min-height: 42px;
+        white-space: nowrap;
+      }
+
       .workspace {
         display: grid;
         grid-template-columns: minmax(420px, 0.92fr) minmax(520px, 1.08fr);
@@ -560,17 +576,35 @@
             <section id="images">
               <h2>图片设置</h2>
               <div class="grid">
-                <label>首屏主图路径 <input data-path="images.hero.src" list="imageOptions" placeholder="assets/images/hero-symmetric-ai-studio.png" /></label>
+                <div class="image-field">
+                  <label>首屏主图 <input data-path="images.hero.src" list="imageOptions" placeholder="assets/images/hero-symmetric-ai-studio.png" /></label>
+                  <button type="button" data-upload-target="images.hero.src">上传图片</button>
+                </div>
                 <label>首屏主图说明 <input data-path="images.hero.alt" /></label>
-                <label>关于我图片路径 <input data-path="images.about.src" list="imageOptions" placeholder="assets/images/about-creative-work.png" /></label>
+                <div class="image-field">
+                  <label>关于我图片 <input data-path="images.about.src" list="imageOptions" placeholder="assets/images/about-creative-work.png" /></label>
+                  <button type="button" data-upload-target="images.about.src">上传图片</button>
+                </div>
                 <label>关于我图片说明 <input data-path="images.about.alt" /></label>
-                <label>联系区图片路径 <input data-path="images.contact.src" list="imageOptions" placeholder="assets/images/contact-quiet-connection.png" /></label>
+                <div class="image-field">
+                  <label>联系区图片 <input data-path="images.contact.src" list="imageOptions" placeholder="assets/images/contact-quiet-connection.png" /></label>
+                  <button type="button" data-upload-target="images.contact.src">上传图片</button>
+                </div>
                 <label>联系区图片说明 <input data-path="images.contact.alt" /></label>
-                <label>文章 1 图片路径 <input data-path="articles.0.image" list="imageOptions" /></label>
+                <div class="image-field">
+                  <label>文章 1 图片 <input data-path="articles.0.image" list="imageOptions" /></label>
+                  <button type="button" data-upload-target="articles.0.image">上传图片</button>
+                </div>
                 <label>文章 1 图片说明 <input data-path="articles.0.alt" /></label>
-                <label>文章 2 图片路径 <input data-path="articles.1.image" list="imageOptions" /></label>
+                <div class="image-field">
+                  <label>文章 2 图片 <input data-path="articles.1.image" list="imageOptions" /></label>
+                  <button type="button" data-upload-target="articles.1.image">上传图片</button>
+                </div>
                 <label>文章 2 图片说明 <input data-path="articles.1.alt" /></label>
-                <label>文章 3 图片路径 <input data-path="articles.2.image" list="imageOptions" /></label>
+                <div class="image-field">
+                  <label>文章 3 图片 <input data-path="articles.2.image" list="imageOptions" /></label>
+                  <button type="button" data-upload-target="articles.2.image">上传图片</button>
+                </div>
                 <label>文章 3 图片说明 <input data-path="articles.2.alt" /></label>
               </div>
               <datalist id="imageOptions">
@@ -621,6 +655,7 @@
       const desktopButton = document.querySelector("#desktopButton");
       const mobileButton = document.querySelector("#mobileButton");
       const publicRefreshLink = document.querySelector("#publicRefreshLink");
+      const uploadButtons = Array.from(document.querySelectorAll("[data-upload-target]"));
 
       const setStatus = (message, tone = "") => {
         statusText.textContent = message;
@@ -700,6 +735,62 @@
 
       const updatePublicRefreshLink = () => {
         publicRefreshLink.href = `https://flourishing-sprite-5edd07.netlify.app/?refresh=${Date.now()}`;
+      };
+
+      const chooseImageFile = () =>
+        new Promise((resolve) => {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = "image/png,image/jpeg,image/webp,image/svg+xml";
+          input.addEventListener(
+            "change",
+            () => {
+              resolve(input.files?.[0] || null);
+            },
+            { once: true }
+          );
+          input.click();
+        });
+
+      const uploadImageForField = async (path) => {
+        if (!canPublish) {
+          setStatus("当前是公网只读后台，无法读取并上传本地图片。请使用本地后台：http://127.0.0.1:4315/admin.html", "error");
+          return;
+        }
+
+        const file = await chooseImageFile();
+
+        if (!file) {
+          return;
+        }
+
+        const targetField = document.querySelector(`[data-path="${path}"]`);
+        setStatus(`正在上传图片：${file.name}...`);
+
+        try {
+          const response = await fetch("/api/upload-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": file.type || "application/octet-stream",
+              "X-File-Name": encodeURIComponent(file.name),
+            },
+            body: file,
+          });
+          const payload = await response.json();
+
+          if (!response.ok || !payload.ok) {
+            throw new Error(payload.message || "图片上传失败。");
+          }
+
+          if (targetField) {
+            targetField.value = payload.path;
+            targetField.dispatchEvent(new Event("input", { bubbles: true }));
+          }
+
+          setStatus(`图片已上传并填入：${payload.path}。点击“保存并推送”后会发布到公网。`, "ok");
+        } catch (error) {
+          setStatus(`图片上传失败：${error.message}`, "error");
+        }
       };
 
       const loadContent = async () => {
@@ -804,6 +895,10 @@
 
       fields.forEach((field) => {
         field.addEventListener("input", schedulePreview);
+      });
+
+      uploadButtons.forEach((button) => {
+        button.addEventListener("click", () => uploadImageForField(button.dataset.uploadTarget));
       });
 
       document.querySelectorAll(".tabs a").forEach((tab) => {
