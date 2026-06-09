@@ -7,6 +7,20 @@
     "name": "Ma Xi",
     "role": "AI 博主"
   },
+  "images": {
+    "hero": {
+      "src": "assets/images/hero-symmetric-ai-studio.png",
+      "alt": "对称的高级简约 AI 知识工作室，桌面中央有电脑与半透明智能界面"
+    },
+    "about": {
+      "src": "assets/images/about-creative-work.png",
+      "alt": "安静的创作工作场景，有电脑、笔记本、笔和窗边光线"
+    },
+    "contact": {
+      "src": "assets/images/contact-quiet-connection.png",
+      "alt": "表达安静连接感的抽象静物图"
+    }
+  },
   "navigation": [
     {
       "label": "内容方向",

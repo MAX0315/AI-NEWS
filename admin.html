@@ -393,7 +393,7 @@
             <a href="#hero">首屏</a>
             <a href="#sections">栏目</a>
             <a href="#contact">联系</a>
-            <a href="#json">JSON</a>
+            <a href="#images">图片</a>
           </nav>
 
           <main class="sections">
@@ -413,8 +413,18 @@
               <h2>首屏内容</h2>
               <div class="grid">
                 <label>小标题 <input data-path="hero.eyebrow" /></label>
-                <label>首屏按钮 JSON <textarea class="code" data-path="hero.actions" data-json></textarea></label>
-                <label>首屏数据 JSON <textarea class="code" data-path="hero.signals" data-json></textarea></label>
+                <label>按钮 1 文案 <input data-path="hero.actions.0.label" /></label>
+                <label>按钮 1 链接 <input data-path="hero.actions.0.href" /></label>
+                <label>按钮 2 文案 <input data-path="hero.actions.1.label" /></label>
+                <label>按钮 2 链接 <input data-path="hero.actions.1.href" /></label>
+                <label>按钮 3 文案 <input data-path="hero.actions.2.label" /></label>
+                <label>按钮 3 链接 <input data-path="hero.actions.2.href" /></label>
+                <label>数据 1 数字 <input data-path="hero.signals.0.value" /></label>
+                <label>数据 1 说明 <input data-path="hero.signals.0.label" /></label>
+                <label>数据 2 数字 <input data-path="hero.signals.1.value" /></label>
+                <label>数据 2 说明 <input data-path="hero.signals.1.label" /></label>
+                <label>数据 3 数字 <input data-path="hero.signals.2.value" /></label>
+                <label>数据 3 说明 <input data-path="hero.signals.2.label" /></label>
               </div>
             </section>
 
@@ -423,14 +433,46 @@
               <div class="grid">
                 <label>内容方向标题 <input data-path="topicsSection.title" /></label>
                 <label>内容方向说明 <textarea data-path="topicsSection.body"></textarea></label>
-                <label>内容方向卡片 JSON <textarea class="code" data-path="topics" data-json></textarea></label>
                 <label>精选文章说明 <textarea data-path="writingSection.body"></textarea></label>
-                <label>文章卡片 JSON <textarea class="code" data-path="articles" data-json></textarea></label>
-                <label>影响力数据 JSON <textarea class="code" data-path="metrics" data-json></textarea></label>
                 <label>关于我标题 <input data-path="about.title" /></label>
                 <label>关于我正文，分段用回车 <textarea data-path="about.paragraphs" data-array-lines></textarea></label>
                 <label>内容方法标题 <input data-path="methodSection.title" /></label>
                 <label>内容方法说明 <textarea data-path="methodSection.body"></textarea></label>
+                <label>方向 1 标题 <input data-path="topics.0.title" /></label>
+                <label>方向 1 说明 <textarea data-path="topics.0.body"></textarea></label>
+                <label>方向 2 标题 <input data-path="topics.1.title" /></label>
+                <label>方向 2 说明 <textarea data-path="topics.1.body"></textarea></label>
+                <label>方向 3 标题 <input data-path="topics.2.title" /></label>
+                <label>方向 3 说明 <textarea data-path="topics.2.body"></textarea></label>
+                <label>方向 4 标题 <input data-path="topics.3.title" /></label>
+                <label>方向 4 说明 <textarea data-path="topics.3.body"></textarea></label>
+                <label>方向 5 标题 <input data-path="topics.4.title" /></label>
+                <label>方向 5 说明 <textarea data-path="topics.4.body"></textarea></label>
+                <label>方向 6 标题 <input data-path="topics.5.title" /></label>
+                <label>方向 6 说明 <textarea data-path="topics.5.body"></textarea></label>
+                <label>文章 1 栏目 <input data-path="articles.0.meta" /></label>
+                <label>文章 1 标题 <input data-path="articles.0.title" /></label>
+                <label>文章 1 摘要 <textarea data-path="articles.0.body"></textarea></label>
+                <label>文章 1 状态 <input data-path="articles.0.state" /></label>
+                <label>文章 1 链接 <input data-path="articles.0.href" /></label>
+                <label>文章 2 栏目 <input data-path="articles.1.meta" /></label>
+                <label>文章 2 标题 <input data-path="articles.1.title" /></label>
+                <label>文章 2 摘要 <textarea data-path="articles.1.body"></textarea></label>
+                <label>文章 2 状态 <input data-path="articles.1.state" /></label>
+                <label>文章 2 链接 <input data-path="articles.1.href" /></label>
+                <label>文章 3 栏目 <input data-path="articles.2.meta" /></label>
+                <label>文章 3 标题 <input data-path="articles.2.title" /></label>
+                <label>文章 3 摘要 <textarea data-path="articles.2.body"></textarea></label>
+                <label>文章 3 状态 <input data-path="articles.2.state" /></label>
+                <label>文章 3 链接 <input data-path="articles.2.href" /></label>
+                <label>数据 1 数值 <input data-path="metrics.0.value" inputmode="numeric" /></label>
+                <label>数据 1 说明 <input data-path="metrics.0.label" /></label>
+                <label>数据 2 数值 <input data-path="metrics.1.value" inputmode="numeric" /></label>
+                <label>数据 2 说明 <input data-path="metrics.1.label" /></label>
+                <label>数据 3 数值 <input data-path="metrics.2.value" inputmode="numeric" /></label>
+                <label>数据 3 说明 <input data-path="metrics.2.label" /></label>
+                <label>数据 4 数值 <input data-path="metrics.3.value" inputmode="numeric" /></label>
+                <label>数据 4 说明 <input data-path="metrics.3.label" /></label>
               </div>
             </section>
 
@@ -439,16 +481,48 @@
               <div class="grid">
                 <label>联系区标题 <input data-path="contact.title" /></label>
                 <label>联系区说明 <textarea data-path="contact.body"></textarea></label>
-                <label>联系链接 JSON <textarea class="code" data-path="contact.links" data-json></textarea></label>
                 <label>按钮文案 <input data-path="contact.buttonLabel" /></label>
                 <label>弹窗标题 <input data-path="exchange.title" /></label>
                 <label>弹窗说明 <textarea data-path="exchange.note"></textarea></label>
+                <label>联系入口 1 文案 <input data-path="contact.links.0.label" /></label>
+                <label>联系入口 1 链接 <input data-path="contact.links.0.href" /></label>
+                <label>联系入口 2 文案 <input data-path="contact.links.1.label" /></label>
+                <label>联系入口 2 链接 <input data-path="contact.links.1.href" /></label>
+                <label>联系入口 3 文案 <input data-path="contact.links.2.label" /></label>
+                <label>联系入口 3 链接 <input data-path="contact.links.2.href" /></label>
+                <label>联系入口 4 文案 <input data-path="contact.links.3.label" /></label>
+                <label>联系入口 4 链接 <input data-path="contact.links.3.href" /></label>
+                <label>联系入口 5 文案 <input data-path="contact.links.4.label" /></label>
+                <label>联系入口 5 链接 <input data-path="contact.links.4.href" /></label>
               </div>
             </section>
 
-            <section id="json">
-              <h2>高级 JSON</h2>
-              <label>完整内容配置 <textarea class="code" id="rawJson"></textarea></label>
+            <section id="images">
+              <h2>图片设置</h2>
+              <div class="grid">
+                <label>首屏主图路径 <input data-path="images.hero.src" list="imageOptions" placeholder="assets/images/hero-symmetric-ai-studio.png" /></label>
+                <label>首屏主图说明 <input data-path="images.hero.alt" /></label>
+                <label>关于我图片路径 <input data-path="images.about.src" list="imageOptions" placeholder="assets/images/about-creative-work.png" /></label>
+                <label>关于我图片说明 <input data-path="images.about.alt" /></label>
+                <label>联系区图片路径 <input data-path="images.contact.src" list="imageOptions" placeholder="assets/images/contact-quiet-connection.png" /></label>
+                <label>联系区图片说明 <input data-path="images.contact.alt" /></label>
+                <label>文章 1 图片路径 <input data-path="articles.0.image" list="imageOptions" /></label>
+                <label>文章 1 图片说明 <input data-path="articles.0.alt" /></label>
+                <label>文章 2 图片路径 <input data-path="articles.1.image" list="imageOptions" /></label>
+                <label>文章 2 图片说明 <input data-path="articles.1.alt" /></label>
+                <label>文章 3 图片路径 <input data-path="articles.2.image" list="imageOptions" /></label>
+                <label>文章 3 图片说明 <input data-path="articles.2.alt" /></label>
+              </div>
+              <datalist id="imageOptions">
+                <option value="assets/images/hero-symmetric-ai-studio.png"></option>
+                <option value="assets/images/hero-knowledge-studio.png"></option>
+                <option value="assets/images/about-creative-work.png"></option>
+                <option value="assets/images/contact-quiet-connection.png"></option>
+                <option value="assets/images/article-ai-companion-person.png"></option>
+                <option value="assets/images/article-ai-companion.png"></option>
+                <option value="assets/images/article-engineering-systems.png"></option>
+                <option value="assets/images/article-knowledge-archive.png"></option>
+              </datalist>
             </section>
           </main>
 
@@ -477,7 +551,6 @@
       let liveTimer = null;
       let canPublish = false;
       const fields = Array.from(document.querySelectorAll("[data-path]"));
-      const rawJson = document.querySelector("#rawJson");
       const statusText = document.querySelector("#status");
       const saveButton = document.querySelector("#saveButton");
       const publishButton = document.querySelector("#publishButton");
@@ -511,11 +584,6 @@
         fields.forEach((field) => {
           const value = getByPath(content, field.dataset.path);
 
-          if (field.dataset.json !== undefined) {
-            field.value = JSON.stringify(value || [], null, 2);
-            return;
-          }
-
           if (field.dataset.arrayLines !== undefined) {
             field.value = Array.isArray(value) ? value.join("\n") : value || "";
             return;
@@ -523,29 +591,28 @@
 
           field.value = value || "";
         });
-        rawJson.value = JSON.stringify(content, null, 2);
       };
 
       const collectFields = () => {
-        const nextContent = JSON.parse(rawJson.value || "{}");
+        const nextContent = structuredClone(content);
 
         fields.forEach((field) => {
           let value = field.value;
 
-          if (field.dataset.json !== undefined) {
-            value = JSON.parse(field.value || "[]");
-          } else if (field.dataset.arrayLines !== undefined) {
+          if (field.dataset.arrayLines !== undefined) {
             value = field.value
               .split("\n")
               .map((line) => line.trim())
               .filter(Boolean);
+          } else if (field.inputMode === "numeric") {
+            const numericValue = Number(field.value);
+            value = Number.isFinite(numericValue) ? numericValue : field.value;
           }
 
           setByPath(nextContent, field.dataset.path, value);
         });
 
         content = nextContent;
-        rawJson.value = JSON.stringify(content, null, 2);
       };
 
       const sendPreview = () => {
@@ -674,20 +741,6 @@
           saveButton.disabled = false;
         }
       };
-
-      rawJson.addEventListener("input", () => {
-        clearTimeout(liveTimer);
-        liveTimer = setTimeout(() => {
-          try {
-            content = JSON.parse(rawJson.value || "{}");
-            fillFields();
-            sendPreview();
-            setStatus("高级 JSON 已同步到表单和右侧预览。", "ok");
-          } catch (error) {
-            setStatus(`JSON 格式错误：${error.message}`, "error");
-          }
-        }, 260);
-      });
 
       fields.forEach((field) => {
         field.addEventListener("input", schedulePreview);

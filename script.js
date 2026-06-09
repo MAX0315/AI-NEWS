@@ -114,6 +114,21 @@ const setLink = (element, data) => {
   }
 };
 
+const setImage = (selector, data) => {
+  const image = document.querySelector(selector);
+
+  if (!image || !data) {
+    return;
+  }
+
+  if (data.src) {
+    image.setAttribute("src", data.src);
+  }
+  if (data.alt) {
+    image.setAttribute("alt", data.alt);
+  }
+};
+
 const renderHomepageContent = (content) => {
   if (!content || typeof content !== "object") {
     return;
@@ -139,6 +154,10 @@ const renderHomepageContent = (content) => {
   document.querySelectorAll(".site-nav a").forEach((link, index) => {
     setLink(link, content.navigation?.[index]);
   });
+
+  setImage(".hero-visual img", content.images?.hero);
+  setImage(".about-image img", content.images?.about);
+  setImage(".contact-image img", content.images?.contact);
 
   setText(".hero .eyebrow", content.hero?.eyebrow);
   setHtmlLines("#hero-title", content.hero?.title);
